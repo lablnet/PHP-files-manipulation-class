@@ -1,4 +1,4 @@
-# PHP-fIles-manipulation-class
+# PHP-files-manipulation-class
 ## Features
  1. Create directory 
  2. Generate random string
