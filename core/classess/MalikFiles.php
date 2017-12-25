@@ -1,8 +1,8 @@
 <?php
-/**
- * @author    Malik Umer Farooq<lablnet01@gmail.com>
- * @copyright MIT
- */
+		/**
+		 * @author    Malik Umer Farooq<lablnet01@gmail.com>
+		 * @copyright MIT
+		 */
 class Files
 {		
 		/**
