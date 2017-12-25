@@ -13,7 +13,7 @@
 ## Configuraiton
 Open core/init.php you see following
 
-     <?php
+    <?php
     //setting up data directory 
     $Malik['MalikDataDir'] = 'E:/Malik/Server/';
     //setting up sub folder it create automatically
