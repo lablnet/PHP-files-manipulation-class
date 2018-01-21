@@ -1,5 +1,7 @@
 # PHP-files-manipulation-class
-## Features
+## This package can manipulate files and directories in several ways.
+
+It can perform several types of operations. Currently it can:
  1. Create directory 
  2. Generate random string
  3. Change file permission
