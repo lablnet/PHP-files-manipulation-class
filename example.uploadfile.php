@@ -8,7 +8,7 @@ if(isset($_POST['submit'])){
 	//passing $_FILES['value of name attribute']
 	// target if you want upload in main data folder leave as / otherwise apply if folder not exists is create first
 	//filetype type of file image,media,zip,docs supported for more info see line 224 of class file
-	$fileName = $files->MalikFileUpload(['file'=>$_FILES['file'],'target'=>'images','filetype'=>'image']);
+	$fileName = $files->FileUpload(['file'=>$_FILES['file'],'target'=>'images','filetype'=>'image']);
 	echo $fileName;
 }
 ?>
