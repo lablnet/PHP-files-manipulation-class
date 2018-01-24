@@ -19,10 +19,9 @@ class Files
 		 * @return string
 		 */		
 	public function DataDir(){
-		global $MainDir;
-		$settings = [
-			'DataDir' => $MainDir['DataDir'],
-			'subfolder' => $MainDir['subfolder'],
+		$settings = [ 
+			'DataDir' => data_dir,
+			'subfolder' => sub_folder,
 		];
 		if(is_writable($settings['DataDir'])){
 			if(!file_exists($settings['DataDir'].'/'.$settings['subfolder'].'/')){
