@@ -17,16 +17,10 @@ Open core/init.php you see following
 
     <?php
     //setting up data directory 
-    $Malik['MalikDataDir'] = 'E:/Malik/Server/';
+    define("data_dir", "E:/Malik/Server/");
     //setting up sub folder it create automatically
-    $Malik['subfolder'] = 'Malik';
+    define("sub_folder", "PHPFILES");
     //load class
     require_once 'classess/MalikFiles.php';
 
-Provide your main directory path
 
-    $Malik['MalikDataDir'] = 'E:/Malik/Server/';
-
-Provide sub dir path
-
-    $Malik['subfolder'] = 'Malik';
