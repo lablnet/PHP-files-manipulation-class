@@ -1,7 +1,7 @@
 <?php
 //setting up data directory 
-define("data_dir", "E:/Malik/Server/");
+define("DATA_DIR", "E:/Malik/Server/");
 //setting up sub folder it create automatically
-define("sub_folder", "PHPFILES");
+define("SUB_FOLDER", "PHPFILES");
 //load class
 require_once 'classess/Files.php';
