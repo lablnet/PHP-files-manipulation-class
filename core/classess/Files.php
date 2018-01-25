@@ -25,10 +25,7 @@ class Files {
 		'Cant_Create' => '[Error]: Can\'t Create ',
 		'No_Support_OS' => '[Error]: Sorry! Your Operating System Does Not Support The Command ',
 		'Size_Limit' => '[Error:]File Size Exceeded The PreSet Limit ',
-		'No_Upload' => '[Error]: Error Uploading File ',
-		
-		  
-		//'' => ''
+		'No_Upload' => '[Error]: Error Uploading File '
 	);
 	
 	
