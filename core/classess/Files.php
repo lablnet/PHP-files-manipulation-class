@@ -7,241 +7,461 @@
 	 * @license MIT 
 	 * @link      https://github.com/Lablnet/PHP-files-manipulation-class
 	 */
-class Files
-{		
-		/**
-		 * Getting server operaing system name.
-		 */	
-	private $ServerOS = PHP_OS;
-		/**
-		 * Create default directory outside of public
-		 * Show dir path 
-		 * @return string
-		 */		
-	public function DataDir(){
-		$settings = [ 
-			'DataDir' => data_dir,
-			'subfolder' => sub_folder,
-		];
-		if(is_writable($settings['DataDir'])){
-			if(!file_exists($settings['DataDir'].'/'.$settings['subfolder'].'/')){
-				mkdir($settings['DataDir'].'/'.$settings['subfolder'].'/');
+	 
+
+class Files {		
+	
+	//Declare Vars	
+	
+	//Getting server operating system name. //$this->ServerOS
+	private $ServerOS = PHP_OS; 
+	// For Usable Chars In $this->GenerateSalts Method //$this->chars
+	private static $chars = array_merge(range(0,9), range('a', 'z'),range('A', 'Z')); 
+	//File Upload Max Size //$this->fupmaxs
+	private $fupmaxs = 7992000000; 
+	//Class Error Codes //$this->cecodes[''] 
+	private cecodes = array (
+		'No_Support' => '[Error]: File Type Not Supported ',
+		'Cant_Create' => '[Error]: Can\'t Create ',
+		'No_Support_OS' => '[Error]: Sorry! Your Operating System Does Not Support The Command ',
+		'Size_Limit' => '[Error:]File Size Exceeded The PreSet Limit ',
+		'No_Upload' => '[Error]: Error Uploading File '
+	);
+	
+	
+	//Method __Construct
+	/*************************************************************
+		* Create default directory outside of public
+		* Show dir path 
+		* @return string
+	*************************************************************/
+	public function __construct(){
+		
+		//If our main directory exists & is writable
+		if( file_exists( DATA_DIR ) && is_writable( DATA_DIR ) ){
+			
+			//Check if our sub directory was already created
+			if( !file_exists( DATA_DIR.SUB_FOLDER.'/' ) ){
+				
+				//if not create our sub directory
+				if( !mkdir( DATA_DIR.SUB_FOLDER.'/' )){
+					
+					//if sub directory creation not possible 
+					trigger_error( $this->cecodes['Cant_Create']. "Sub Directory ((".SUB_FOLDER.")) In ".DATA_DIR );
+					
+				} else {
+					
+					//if it can be created then return the full path to the sub directory
+					$this->fullDirPath =  DATA_DIR.SUB_FOLDER.'/';
+					return $this->fullDirPath;
+					
+				}
+				
+			} else {
+				
+				//if it does exist then return the full path to the sub directory
+				$this->fullDirPath =  DATA_DIR.SUB_FOLDER.'/';
+				return $this->fullDirPath;
+				
 			}
-			return $settings['DataDir'].'/'.$settings['subfolder'].'/';
+			
 		}else{
-			return false;
+			
+			//if our main directory doesn\'t exist then create our main directory
+			if( !mkdir( DATA_DIR )){
+					
+				//if main directory creation not possible 
+				trigger_error( $this->cecodes['Cant_Create']. "Main Directory ( ( ".DATA_DIR." ) ) On Host ".php_uname('n') );
+					
+			} else {
+					
+				//if it can be created then return back to the __construct
+				return __construct();
+					
+			}
+				
 		}
-	}
-		/**
-		 * Create directory outside of public
-		 *
-		 * @param $name (string) string $name name of directory
-		 * @return boolean
-		 */		
-	public function MkDir($name){
-		if(!file_exists($this->DataDir().$name)){
-			mkdir($this->DataDir().$name.'/',0755,true);
-			return true;
-		}else{
-			return false;
-		}
-	}
-		/**
-		 * generate salts for files
-		 * 
-		 * @param string $length length of salts
-		 * @return string
-		 */			
-	public function GenerateSalts($length){
-		$somestrings = '0123456789abcdefghijklmnFGSGSGFGSVHVEHDSHVHVSVHDVGFDopqfgsfsfsfsfrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$stringlength = strlen($somestrings);
-		$randomString = '';
-		for ($i = 0; $i < $length; $i++) {
-			$randomString .= $somestrings[rand(0, $stringlength - 1)];
-		}
-		return $randomString;
-	}	
-		/**
-		 * Change premission of file and folder
-		 * @param $params (array) 
-		 * 		 'source' => file or folder
-		 *		 'premission' => premission set to be.		
-		 * @return boolean
-		 */			
-	public function Premission($params){
-		if($params){
-			if(!empty($params['source']) and !empty($params['premission'])){
-				chmod($this->DataDir().$params['source'], $params['premission']);
+		
+	} // end method __construct
+	
+	
+	//Method MkDirs	 
+	/*************************************************************
+		* Create directory outside of public
+		*
+		* @param $name (string) string $name name of directory
+		* @return boolean
+	*************************************************************/
+	public function MkDirs( $name ){
+		
+		//if file doesnt exist
+		if( !file_exists( $this->fullDirPath.$name ) ){
+			
+			//create it //also verify that it was created
+			if( mkdir( $this->fullDirPath.$name.'/',0755,true ) ){
+				
 				return true;
-			}else{
+				
+			} else {
+				
 				return false;
+				
 			}
+			
 		}else{
+			
 			return false;
+			
 		}
-	}
-		/**
-		 * Copy files or folder 
-		 * @param $params (array)
-		 * $params['status'] files or dir
-		 * $params['target'] => folder that file shoud copy 
-		 * $params['files'] array of files one or multiple
-		 * $params['dirs'] array of dir one or muktiple
-		 * #issue folder not copying in windows
-		 * @return boolean
-		 */		
-	public function CopyFilesAndFolder($params){
-		if(is_array($params)){
-			if($params['status'] === 'files'){
-				if(!is_dir($this->DataDir().$params['target'].'/')){
-					$this->MkDir($params['target'].'/');
+	} //end method
+	
+	
+	//Method GenerateSalts
+	/*************************************************************
+		* generate salts for files
+		* 
+		* @param string $length length of salts
+		* @return string
+	*************************************************************/
+	public function GenerateSalts( $length ){
+		
+		$stringlength = count( $this->chars  ); //Used Count because its array now
+		
+		$randomString = '';
+		
+		for ( $i = 0; $i < $length; $i++ ) {
+			
+			$randomString .= $this->chars[rand( 0, $stringlength - 1 )];
+			
+		}
+		
+		return $randomString;
+		
+	} //end method
+	
+	
+	//Method Permission		
+	/*************************************************************
+		* Change premission of file and folder
+		* @param $params (array) 
+		* 		 'source' => file or folder
+		*		 'premission' => premission set to be.		
+		* @return boolean
+	*************************************************************/
+	public function Permission( $params ){
+		
+		if( $params ){
+			
+			if( !empty( $params['source'] ) and !empty( $params['Permission'] ) ){
+				
+				//verify chmod
+				if( chmod( $this->fullDirPath.$params['source'], $params['Permission'] ) ){
+				
+					return true;
+					
+				} else{
+					
+					return false;
+					
 				}
-				foreach ($params['files'] as $file => $value) {
-					if(file_exists($this->DataDir().$params['path'].'/'.$value)){
-						copy($this->DataDir().$params['path'].'/'.$value, $this->DataDir().$params['target'].'/'.$value);
-					}
-				}
+				
+			}else{
+				
+				return false;
+				
 			}
-			if($params['status'] === 'dir'){
-				if(!is_dir($this->DataDir().$params['target'].'/')){
-					$this->MkDir($params['target'].'/');
+			
+		}else{
+			
+			return false;
+			
+		}
+	} //end method
+	
+	
+	//Method CopyFilesAndFolder
+	/*************************************************************
+		* Copy files or folder 
+		* @param $params (array)
+		* $params['status'] files or dir
+		* $params['target'] => folder that file shoud copy 
+		* $params['files'] array of files one or multiple
+		* $params['dirs'] array of dir one or muktiple
+		* #issue folder not copying in windows
+		* @return boolean
+	*************************************************************/
+	public function CopyFilesAndFolder( $params ){
+		
+		if( is_array( $params ) ){
+			
+			if( $params['status'] === 'files' ){
+				
+				if( !is_dir( $this->fullDirPath.$params['target'].'/' ) ){
+					
+					$this->MkDirs( $params['target'].'/' );
+					
 				}
-				foreach ($params['dirs'] as $file => $from) {
-					if(is_dir($this->DataDir().$value.'/')){
-					if($this->ServerOS === 'WINNT' or $this->ServerOS ==='WIN32' or $this->ServerOS ==='Windows'){
-								shell_exec("xcopy ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}elseif($this->ServerOS === 'Linux' or $this->ServerOS ==='FreeBSD' or $this->ServerOS ==='OpenBSD'){
-								shell_exec("cp -r ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}elseif($this->ServerOS === 'Unix'){
-								shell_exec("cp -r ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}else{
-								return "Sorry! Your operating system not supported copy command";
-							}
+				
+				foreach ( $params['files'] as $file => $value ) {
+					
+					if( file_exists( $this->fullDirPath.$params['path'].'/'.$value ) ){
+						
+						copy( $this->fullDirPath.$params['path'].'/'.$value, $this->fullDirPath.$params['target'].'/'.$value );
+						
+					}
+					
+				}
+				
+			}
+			
+			if( $params['status'] === 'dir' ){
+				
+				if( !is_dir( $this->fullDirPath.$params['target'].'/' ) ){
+					
+					$this->MkDirs( $params['target'].'/' );
+					
+				}
+				
+				foreach ( $params['dirs'] as $file => $from ) {
+					
+					if( is_dir( $this->fullDirPath.$value.'/' ) ){
+						
+						if( $this->ServerOS === 'WINNT' or $this->ServerOS ==='WIN32' or $this->ServerOS ==='Windows' ){
+								
+							shell_exec( "xcopy ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+						
+						}elseif( $this->ServerOS === 'Linux' or $this->ServerOS ==='FreeBSD' or $this->ServerOS ==='OpenBSD' ){
+								
+							shell_exec( "cp -r ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+						
+						}elseif( $this->ServerOS === 'Unix' ){
+								
+							shell_exec( "cp -r ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+						
+						}else{
+							
+							return $this->cecodes['No_Support_OS']."<b>COPY</b>";
+						
+						}
 					}
 				}				
 			}
 		}else{
+			
 			return false;
+		
 		}
-	}
-		/**
-		 * Delete the files or folder
-		 * @param $params (array)
-		 * $params['path'] string path
-		 * $params['status'] => files and dir accpeted 
-		 * $params['files'] array of files one or multiple
-		 * $params['dir'] array of dir one or muktiple
-		 *
-		 * @return boolean
-		 */		
-	public function DelFilesAndFolders($params){
-		if(is_array($params)){
-			if($params['status'] === 'files'){
-				foreach($params['files'] as $file=>$value){
-					if(file_exists($this->DataDir().$params['path'].$value)){
-						unlink($this->DataDir().$params['path'].$value);
+	} //end method
+	
+	
+	//Method DelFilesAndFolders
+	/*************************************************************
+		* Delete the files or folder
+		* @param $params (array)
+		* $params['path'] string path
+		* $params['status'] => files and dir accpeted 
+		* $params['files'] array of files one or multiple
+		* $params['dir'] array of dir one or muktiple
+		*
+		* @return boolean
+	*************************************************************/
+	public function DelFilesAndFolders( $params ){
+		
+		if( is_array( $params ) ){
+			
+			if( $params['status'] === 'files' ){
+				
+				foreach( $params['files'] as $file=>$value ){
+					
+					if( file_exists( $this->fullDirPath.$params['path'].$value ) ){
+						
+						unlink( $this->fullDirPath.$params['path'].$value );
+						
 					}else{
+						
 						return false;
+						
 					}
 				}
 				return true;
+				
 			}
-			if($params['status'] === 'dir'){
-				foreach($params['dir'] as $file=>$value){
-					if(is_dir($this->DataDir().$params['path'].$value)){
-						rmdir($this->DataDir().$params['path'].$value);
+			
+			if( $params['status'] === 'dir' ){
+				
+				foreach( $params['dir'] as $file=>$value ){
+					
+					if( is_dir( $this->fullDirPath.$params['path'].$value ) ){
+						
+						rmdir( $this->fullDirPath.$params['path'].$value );
+						
 					}else{
+						
 						return false;
+						
 					}
+					
 				}
+				
 			}	
+			
 		}else{
+			
 			return false;
+			
 		}
-	}	
-		/**
-			 * Move files from one directory to another
-			 * 			 
-			 * @param $params (array) 
-			 * status required accpted files and dir
-			 * in files case files => array('one.txt','two.txt','three.txt'); 
-			 * to & from=> array is required provide full path in these to and from if select file form e.g F:\AndroidStudioProjects\AwesomeDictionary\.gradle\3.3\ you need add this in path then to add whatever want you move
-			 * @return boolean
-		 */		
-	public function MovesFilesAndFolders($params){
-			if(is_array($params)){
-				if(isset($params['status']) and !empty($params['status'])){
-					if($params['status'] === 'files'){
-						if(!is_dir($params['to'])){
-							if(!file_exists($params['to'])){
-								$this->MkDir($params['to']);
+		
+	} //end method
+	
+	
+	//Method MovesFilesAndFolders
+	/*************************************************************
+		* Move files from one directory to another
+		* 			 
+		* @param $params (array) 
+		* status required accpted files and dir
+		* in files case files => array('one.txt','two.txt','three.txt'); 
+		* to & from=> array is required provide full path in these to and from if select file form e.g F:\AndroidStudioProjects\AwesomeDictionary\.gradle\3.3\ you need add this in path then to add whatever want you move
+		* @return boolean
+	*************************************************************/
+	public function MovesFilesAndFolders( $params ){
+		
+			if( is_array( $params ) ){
+				
+				if( isset( $params['status'] ) and !empty( $params['status'] ) ){
+					
+					if( $params['status'] === 'files'  ){
+						
+						if(  !is_dir(  $params['to']  )  ){
+							
+							if(  !file_exists(  $params['to']  )  ){
+								
+								$this->MkDirs( $params['to'] );
+								
 							}
 						}
-						foreach($params['files'] as $file){
-							rename($params['from'].'/'.$file,$params['to'].'/'.$file);
+						foreach( $params['files'] as $file ){
+							
+							rename( $params['from'].'/'.$file,$params['to'].'/'.$file );
+							
 						}
 					return true;	
-				}elseif($params['status'] === 'dir'){
-						if(!is_dir($params['to'])){
-							if(!file_exists($params['to'])){
-								$this->MkDir($params['to']);
-							}	
+					
+				}elseif( $params['status'] === 'dir' ){
+					
+					if( !is_dir( $params['to'] ) ){
+							
+						if( !file_exists( $params['to'] ) ){
+								
+							$this->MkDirs( $params['to'] );
+								
 						}
-						foreach($params['from'] as $key => $from){
-							if($this->ServerOS === 'WINNT' or $this->ServerOS ==='WIN32' or $this->ServerOS ==='Windows'){
-								shell_exec("move ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}elseif($this->ServerOS === 'Linux' or $this->ServerOS ==='FreeBSD' or $this->ServerOS ==='OpenBSD'){
-								shell_exec("mv ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}elseif($this->ServerOS === 'Unix'){
-								shell_exec("mv ". $this->DataDir().$from .' '. $this->DataDir().$params['to'].'/');
-							}else{
-								return "Sorry! Your operating system not supported move command";
-							}
+						
+					} //end if
+					
+					foreach( $params['from'] as $key => $from ){
+							
+						if( $this->ServerOS === 'WINNT' or $this->ServerOS ==='WIN32' or $this->ServerOS ==='Windows' ){
+								
+							shell_exec( "move ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+								
+						}elseif( $this->ServerOS === 'Linux' or $this->ServerOS ==='FreeBSD' or $this->ServerOS ==='OpenBSD' ){
+								
+							shell_exec( "mv ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+								
+						}elseif( $this->ServerOS === 'Unix' ){
+								
+							shell_exec( "mv ". $this->fullDirPath.$from .' '. $this->fullDirPath.$params['to'].'/' );
+								
+						}else{
+								
+							return $this->cecodes['No_Support_OS']."<b>MOVE</b>";
+								
 						}
+							
+					} // end foreach
+						
 				}
 			}
+			
 		}else{
+			
 			return false;
+			
 		}	
-	}	
-		/**
-		 * Upload file
-		 * @param $params (array)		
-		 * $params string $params['file'] required file 
-		 * $params string $params['target'] target dir sub dir of data folder
-		 * $params string $params['filetype'] type e.g image,media etc
-		 * errors possibles
-		 * 2220 => extension not matched
-		 * 222 => type not matched
-		 *
-		 * @return integar on fail fileName on success
-		 */			
-	public function FileUpload($params){
-		if(is_array($params)){
-			$exactName = basename($params['file']['name']);
+		
+	} //end method
+	
+
+	//Method FileUpload
+	/*************************************************************
+		* Upload file
+		* @param $params (array)		
+		* $params string $params['file'] required file 
+		* $params string $params['target'] target dir sub dir of data folder
+		* $params string $params['filetype'] type e.g image,media etc
+		* errors possibles
+		* 2220 => extension not matched
+		* 222 => type not matched
+		*
+		* @return integer on fail fileName on success
+	*************************************************************/
+	public function FileUpload( $params ){
+		
+		if( is_array( $params ) ){
+			
+			$exactName = basename( $params['file']['name'] ); // pathinfo( $params['file']['name'], PATHINFO_BASENAME );
+			
 			$fileTmp = $params['file']['tmp_name'];
+			
 			$fileSize = $params['file']['size'];
+			
 			$error = $params['file']['error'];
+			
 		    $type = $params['file']['type'];
-			$ext = explode('.',$exactName);
-			$ext = strtolower(end($ext));
-			$newName = $this->GenerateSalts(30);
+			
+			$ext =  pathinfo( $params['file']['name'], PATHINFO_EXTENSION );
+			
+			$newName = $this->GenerateSalts( 30 );
+			
 			$fileNewName = $newName.'.'.$ext;
-			if($params['filetype'] === 'image'){
-				$allowerd_ext = ['jpg','png','jpeg','gif','ico'];
-			}elseif($params['filetype'] === 'zip'){
-				$allowerd_ext = ['zip','tar','7zip','rar'];
-			}elseif($params['filetype'] === 'docs'){
-				$allowerd_ext = ['pdf','docs','docx'];
-			}elseif($params['filetype'] === 'media'){
-				$allowerd_ext = ['mp4','mp3','wav','3gp'];
-			}else{
-				// occur wrong skill of developers
-				return $ext." File extension wrong";
-			}
+			
+			switch( $params['filetype'] ){
+				
+				case 'image':
+				
+					$allowerd_ext = ['jpg','png','jpeg','gif','ico'];
+					
+					break;
+					
+				case 'zip':
+				
+					$allowerd_ext = ['zip','tar','7zip','rar'];
+					
+					break;
+					
+				case 'docs':
+				
+					$allowerd_ext = ['pdf','docs','docx'];
+					
+					break;
+					
+				case 'media':
+				
+					$allowerd_ext = ['mp4','mp3','wav','3gp'];
+					
+					break;
+					
+				default:
+				
+					// occur wrong skill of developers
+					return $this->cecodes['No_Support']." <b>{$ext}</b>";
+					
+			} //end switch
+			
 					$AccpetedTypes = [
 									'application/msword',
-									'application/vnd.openxmlformats-officedocu	ment.wordprocessingml.document',
+									'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 									'image/gif',
 									'image/jpeg',
 									'image/jpeg',
@@ -249,81 +469,163 @@ class Files
 									'video/mp4',
 									'application/pdf',
 									'image/png',
-									'application/zip',					'application/octet-stream'
+									'application/zip',			
+									'application/octet-stream'
 					];
-						if(in_array($type,$AccpetedTypes) === false){
-							return $type." Not supported";
+						if( in_array( $type, $AccpetedTypes ) === false ){
+							
+							return $this->cecodes['No_Support']." <b>{$type}</b>";
+							
 						}				
-			if(in_array($ext,$allowerd_ext) === true){
-				if($error === 0){
-					if($fileSize <= 7992000000){
-						if(!is_dir($this->DataDir().$params['target']) or !file_exists($this->DataDir().$params['target'])){
-							$this->MkDir($params['target'].'/');
-						}
-						$fileRoot = $this->DataDir().$params['target'].'/'.$fileNewName;
-						if(move_uploaded_file($fileTmp,$fileRoot)){
-							return $fileNewName;
-						}else{
-							return "Something went wrong";
+			if( in_array( $ext,$allowerd_ext ) === true ){
+				
+				if( $error === 0 ){
+					
+					if( $fileSize <= $this->fupmaxs ){
+						
+						if( !is_dir( $this->fullDirPath.$params['target'] ) or !file_exists( $this->fullDirPath.$params['target'] ) ){
+							
+							$this->MkDirs( $params['target'].'/' );
+							
 						}
 						
-					}else{
-						return "File size exceeded the limits";
+						$fileRoot = $this->fullDirPath.$params['target'].'/'.$fileNewName;
+						
+						if( move_uploaded_file( $fileTmp,$fileRoot ) ){
+							
+							return $fileNewName;
+							
+						}else{
+							
+							return $this->cecodes['No_Upload']. "{$fileRoot}";    
+							
+						}
+						
+					}else{ 
+						
+						return $this->cecodes['Size_Limit'];
+						
 					}
 				}else{
-					return $error;			
+					
+					return $error;
+					
 			}
+			
 			}else{
-				return $ext." this extension not alloewd";
+				
+				return $this->cecodes['No_Support']." <b>{$ext}</b>";
+				
 			}
+			
 		}else{
+			
 			return false;
-		}	
-	}
-		/**
-		 * Handeling files
-		 *		
-		 * @params string $params['mods'] Support six different mods
-		 *	'readonly' => 
-		 *	'read+write' => 
-		 *	'writeonly' => 
-		 *	'writeonlyoverride' => 
-		 *	'writeonlynotoverride' => 
-		 *	'write+readnotoverride' => 
-		 * @params string $params['target'] target dir sub dir of data folder
-		 * @params string $params['name'] Name of file
-		 * @params string $params['extension'] Extension of file
-		 * @params text $params['text'] text or data that write in file	 
-		 * @return integar on fail fileName on success
-		 */		
-	public function FilesHandeling($params){
-		if(is_array($params)){
-				if($params['mods'] === 'readonly'){
-					$mod = 'r';
-				}elseif($params['mods'] === 'read+write'){
-					$mod = 'r+';
-				}elseif($params['mods'] === 'writeonly'){
-					$mod = 'w';
-				}elseif($params['mods'] === 'writeonlyoverride'){
-					$mod = 'w+';
-				}elseif($params['mods'] === 'writeonlynotoverride'){
-					$mod = 'a';
-				}elseif($params['mods'] === 'write+readnotoverride'){
-					$mod = 'a+';
-				}else{
-					return false;
-				}												
-			$fopen = fopen($this->DataDir().$params['target'].'/'.$params['name'].'.'.$params['extension'], $mod);
-			 fwrite($fopen, $params['text']);
-			if($mod === 'r' or $mod === 'r+' or $mod === 'a+'){
-				return fread($fopen, filesize($this->DataDir().$params['target'].'/'.$params['name'].'.'.$params['extension']));
-			}elseif($mod === 'w' or $mod === 'w+' or $mod === 'a'){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			return false;
+			
 		}
-	}
-}
+		
+	} //end method
+	
+	
+	//Method FilesHandeling	
+	/*************************************************************
+		* Handeling files
+		*		
+		* @params string $params['mods'] Support six different mods
+		*	'readonly' => 
+		*	'read+write' => 
+		*	'writeonly' => 
+		*	'writeonlyoverride' => 
+		*	'writeonlynotoverride' => 
+		*	'write+readnotoverride' => 
+		* @params string $params['target'] target dir sub dir of data folder
+		* @params string $params['name'] Name of file
+		* @params string $params['extension'] Extension of file
+		* @params text $params['text'] text or data that write in file	 
+		* @return integar on fail fileName on success
+	*************************************************************/
+	public function FilesHandeling( $params ){
+		
+		if( is_array( $params ) ){
+			
+			switch ( $params['mods'] ){
+				
+				case 'readonly':
+				
+					$mod = 'r';
+					
+					break;
+				
+				case 'read+write':
+				
+					$mod = 'r+';
+					
+					break;
+					
+				case 'writeonly':
+				
+					$mod = 'w';
+					
+					break;
+				
+				case 'writeonlyoverride':
+				
+					$mod = 'w+';
+					
+					break;
+					
+				case 'writeonlynotoverride':
+				
+					$mod = 'a';
+					
+					break;
+					
+				case 'write+readnotoverride':
+
+					$mod = 'a+';
+				
+					break;
+					
+				default:
+				
+					return false;
+					
+			} //end switch
+				
+			$fopen = fopen( $this->fullDirPath.$params['target'].'/'.$params['name'].'.'.$params['extension'], $mod );
+			
+			fwrite( $fopen, $params['text'] );
+			
+			switch ( $mod ){
+				
+				case 'r':
+				case 'r+': 
+				case 'a+':
+				
+					return fread( $fopen, filesize( $this->fullDirPath.$params['target'].'/'.$params['name'].'.'.$params['extension'] ) );
+					
+					break;
+					
+				case 'w':
+				case 'w+':
+				case 'a':
+
+					return true;
+					
+					break;
+					
+				default:
+				
+				return false;
+				
+			} //end switch
+			
+		}else{
+			
+			return false;
+			
+		}
+		
+	} //end method
+	
+} //end class
