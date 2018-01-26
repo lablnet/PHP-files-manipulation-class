@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
 		// target if you want upload in main data folder leave as / otherwise apply if folder not exists is create first
 		//filetype type of file image,media,zip,docs supported for more info see line 224 of class file
 		$fileName = $files->FileUpload(['file'=>$_FILES['file'],'target'=>'images','filetype'=>'image']);
-		echo $fileName;
+		echo $files->fullDirPath.$fileName;
 		echo $link;
 		
 	//Make A Directory	
@@ -26,7 +26,7 @@ if(isset($_POST['submit'])){
 		
 		if( $files->MkDirs( $_POST['mydir'] ) ){
 			
-			echo $files->DataDir().$_POST['mydir'].'/ [has been created]';
+			echo $files->fullDirPath.$_POST['mydir'].'/ [has been created]';
 			echo $link;
 			
 		}
