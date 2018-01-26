@@ -16,11 +16,11 @@ class Files {
 	//Getting server operating system name. //$this->ServerOS
 	private $ServerOS = PHP_OS; 
 	// For Usable Chars In $this->GenerateSalts Method //$this->chars
-	private static $chars = array_merge(range(0,9), range('a', 'z'),range('A', 'Z')); 
+	private $chars; 
 	//File Upload Max Size //$this->fupmaxs
 	private $fupmaxs = 7992000000; 
 	//Class Error Codes //$this->cecodes[''] 
-	private cecodes = array (
+	private $cecodes = array (
 		'No_Support' => '[Error]: File Type Not Supported ',
 		'Cant_Create' => '[Error]: Can\'t Create ',
 		'No_Support_OS' => '[Error]: Sorry! Your Operating System Does Not Support The Command ',
@@ -37,6 +37,7 @@ class Files {
 	*************************************************************/
 	public function __construct(){
 		
+		$this->chars = array_merge(range(0,9), range('a', 'z'),range('A', 'Z'));
 		//If our main directory exists & is writable
 		if( file_exists( DATA_DIR ) && is_writable( DATA_DIR ) ){
 			
