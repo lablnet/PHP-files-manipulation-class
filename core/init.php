@@ -1,7 +1,7 @@
 <?php
 //setting up data directory 
-$Malik['MalikDataDir'] = 'E:/Malik/Server/';
+define("DATA_DIR", "E:/Malik/Server/");
 //setting up sub folder it create automatically
-$Malik['subfolder'] = 'Malik';
+define("SUB_FOLDER", "PHPFILES");
 //load class
-require_once 'classess/MalikFiles.php';
+require_once 'classess/Files.php';
