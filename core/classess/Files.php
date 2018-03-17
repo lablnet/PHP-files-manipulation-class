@@ -436,7 +436,7 @@ class Files {
 				
 				case 'image':
 				
-					$allowerd_ext = ['jpg','png','jpeg','gif','ico'];
+					$allowerd_ext = ['jpg','png','jpeg','gif','ico','svg'];
 					
 					break;
 					
@@ -476,7 +476,10 @@ class Files {
 									'application/pdf',
 									'image/png',
 									'application/zip',	
-									'application/et-stream'
+									'application/et-stream',
+									'image/x-icon',
+									'image/icon',
+									'image/svg+xml',
 					];
 						if( in_array( $type, $AccpetedTypes ) === false ){
 							
@@ -577,7 +580,7 @@ class Files {
 					
 					case 'image':
 					
-						$allowerd_ext = ['jpg','png','jpeg','gif','ico'];
+						$allowerd_ext = ['jpg','png','jpeg','gif','ico','svg'];
 						
 						break;
 						
@@ -617,7 +620,10 @@ class Files {
 										'application/pdf',
 										'image/png',
 										'application/zip',
-										'application/octet-stream'
+										'application/octet-stream',
+										'image/x-icon',
+									'image/icon',
+									'image/svg+xml',
 						];
 							if( in_array( $type, $AccpetedTypes ) === false ){
 								
