@@ -1,0 +1,18 @@
+{
+    "name": "lablnet/files",
+    "description": "PHP Files package.",
+    "keywords": ["php", "files","psr-3","free","package","Lablnet"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Malik Umer Farooq",
+            "email":"lablnet01@gmail.com",
+            "homepage": "https://softhub99.com"
+        }
+    ],  
+    "autoload": {
+        "psr-4": {
+             "Lablnet\\": "src/"
+        }
+    }
+}

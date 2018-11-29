@@ -1,32 +1,3 @@
-# PHP Files Class
-This package can manipulate files and directories in several ways.
-
-
-## This package can manipulate files and directories in several ways.
-
-It can perform several types of operations. Currently it can:
-
-1.  Create directory
-2.  Generate random string
-3.  Change file permission
-4.  Copy Files or folders
-5.  Move files and folders
-6.  Delete files and folders
-7.  Upload files with validation
-8.  Multiple file upload with validation
-9.  read/write files 
-## Requirement
-
-- PHP
-- Composer
-
-## install
-run this command
-``` composer require lablnet/files```
-
-## usage
-
-```php
 <?php 
 
 use Lablnet\Files;
@@ -77,6 +48,3 @@ var_dump($status);
 //Multiple file upload
 $status = $files->filesUpload($_FILES['file'],'/','image',count($_FILES['file']['name']));
 var_dump($status);
-
-
-```
