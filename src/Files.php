@@ -17,6 +17,16 @@ namespace Lablnet;
 class Files
 {
     /*
+    * The default value for recursive create dirs
+    */
+    private $recursiveDirectories = true;
+
+    /*
+    * Default value for chmod on create directory
+    */
+    private $defCHMOD = 0755;
+
+    /*
      * Mine types of file
     */
     private $mineTypes = [
@@ -63,6 +73,38 @@ class Files
     ];
 	
     /**
+     * Define the recursive create directories.
+     *
+     * @param $value recursive status true|false.
+     *
+     * @return current value
+     */
+    public function recursiveCreateDir($value=null)
+    {
+        if($value === null){
+            return $this->recursiveDirectories;
+        }else{
+            $this->recursiveDirectories = $value;
+        }
+    }
+	
+    /**
+     * Define the CHMOD for created dir.
+     *
+     * @param $value CHMOD value default: 0755.
+     *
+     * @return current value
+     */
+    public function defaultCHMOD($value=null)
+    {
+        if($value === null){
+            return $this->defCHMOD;
+        }else{
+            $this->defCHMOD = $value;
+        }
+    }
+	
+    /**
      * Add the mine type.
      *
      * @param $type correct mine type.
@@ -91,20 +133,28 @@ class Files
      * Make the dir.
      *
      * @param $name name of dir with path.
+     * @recursive $recursive recursive mode create: null|true|false.
+     * @param $chmod directory permission on create: 0755
      *
      * @return bool
      */
-    public function mkDir($name)
+    public function mkDir($name, $recursive=null, $chmod=null)
     {
+        // test the recursive mode with default value
+        $recursive = ($recursive === null) ? $this->recursiveDirectories : $recursive;
+        // test the chmod with default value
+        $chmod = ($chmod === null) ? $this->defCHMOD : $chmod;
         if (!is_dir($name)) {
-            return (mkdir($name)) ? true : false;
+            // this change to permit create dir in recursive mode
+            return (mkdir($name, $chmod, $recursive)) ? true : false;
         }
 
         return false;
     }
 
+
     /**
-     * Make the dir.
+     * Make the permission.
      *
      * @param $source name of file or directory with path.
      *        $pre valid premission
