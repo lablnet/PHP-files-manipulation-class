@@ -55,7 +55,7 @@ class Files
         'docs'  => ['pdf', 'docs', 'docx'],
         'media' => ['mp4', 'mp3', 'wav', '3gp'],
     ];
-	
+
     /*
      * resource
     */
@@ -71,7 +71,7 @@ class Files
         'writeAppend'     => 'a',
         'readWriteAppend' => 'a+',
     ];
-	
+
     /**
      * Define the recursive create directories.
      *
@@ -79,15 +79,15 @@ class Files
      *
      * @return current value
      */
-    public function recursiveCreateDir($value=null)
+    public function recursiveCreateDir($value = null)
     {
-        if($value === null){
+        if ($value === null) {
             return $this->recursiveDirectories;
-        }else{
+        } else {
             $this->recursiveDirectories = $value;
         }
     }
-	
+
     /**
      * Define the CHMOD for created dir.
      *
@@ -95,15 +95,15 @@ class Files
      *
      * @return current value
      */
-    public function defaultCHMOD($value=null)
+    public function defaultCHMOD($value = null)
     {
-        if($value === null){
+        if ($value === null) {
             return $this->defCHMOD;
-        }else{
+        } else {
             $this->defCHMOD = $value;
         }
     }
-	
+
     /**
      * Add the mine type.
      *
@@ -134,11 +134,12 @@ class Files
      *
      * @param $name name of dir with path.
      * @recursive $recursive recursive mode create: null|true|false.
+     *
      * @param $chmod directory permission on create: 0755
      *
      * @return bool
      */
-    public function mkDir($name, $recursive=null, $chmod=null)
+    public function mkDir($name, $recursive = null, $chmod = null)
     {
         // test the recursive mode with default value
         $recursive = ($recursive === null) ? $this->recursiveDirectories : $recursive;
@@ -151,7 +152,6 @@ class Files
 
         return false;
     }
-
 
     /**
      * Make the permission.
@@ -411,7 +411,6 @@ class Files
 
         return $status;
     }
-	
 
     /**
      * Open the file.
@@ -483,5 +482,5 @@ class Files
         }
 
         return $randomString;
-    }	
+    }
 }
