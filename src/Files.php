@@ -91,7 +91,7 @@ class Files
     /**
      * Define the CHMOD for created dir.
      *
-     * @param $value CHMOD value default: 0755.
+     * @param (string) $value CHMOD value default: 0755.
      *
      * @return current value
      */
@@ -107,7 +107,7 @@ class Files
     /**
      * Add the mine type.
      *
-     * @param $type correct mine type.
+     * @param (string) $type correct mine type.
      *
      * @return void
      */
@@ -119,8 +119,8 @@ class Files
     /**
      * Add the extemsio.
      *
-     * @param $type correct type.
-     *        $sub extensions
+     * @param (string) $type Correct type.
+     * @param (strubg) $sub  Extensions
      *
      * @return void
      */
@@ -132,10 +132,9 @@ class Files
     /**
      * Make the dir.
      *
-     * @param $name name of dir with path.
-     * @recursive $recursive recursive mode create: null|true|false.
-     *
-     * @param $chmod directory permission on create: 0755
+     * @param (string) $name      Name of dir with path.
+     * @param (string) $recursive Recursive mode create: null|true|false.
+     * @param (string) $chmod     Directory permission on create: 0755
      *
      * @return bool
      */
@@ -156,8 +155,8 @@ class Files
     /**
      * Make the permission.
      *
-     * @param $source name of file or directory with path.
-     *        $pre valid premission
+     * @param (string) $source Name of file or directory with path.
+     * @param (int) $pre       Valid premission
      *
      * @return bool
      */
@@ -173,9 +172,9 @@ class Files
     /**
      * Copy files.
      *
-     * @param $source name of file or directory with path.
-     *        $target target directory
-     *        $files (array) files to be copy
+     * @param (string) $source name of file or directory with path.
+     * @param (string) $target Target directory
+     * @param (array)  $files  Files to be copy
      *
      * @return void
      */
@@ -192,9 +191,9 @@ class Files
     /**
      * Move files.
      *
-     * @param $source name of file or directory with path.
-     *        $target target directory
-     *        $files (array) files to be move
+     * @param (string) $source Name of file or directory with path.
+     * @param (string) $target Target directory
+     * @param (array)  $files  Files to be move
      *
      * @return void
      */
@@ -211,7 +210,7 @@ class Files
     /**
      * Delete files.
      *
-     * @param $file name of file with path.
+     * @param (array) $file Name of file with path.
      *
      * @return void
      */
@@ -227,9 +226,9 @@ class Files
     /**
      * Copy dirs.
      *
-     * @param $source directory with path.
-     *        $target target directory
-     *        $files (array) dirs to be copy
+     * @param (string) $source Directory with path.
+     * @param (string) $target Target directory
+     * @param (array)  $files  Dirs to be copy
      *
      * @return void
      */
@@ -248,9 +247,9 @@ class Files
     /**
      * Move dirs.
      *
-     * @param $source directory with path.
-     *        $target target directory
-     *        $dir (array) dir to be move
+     * @param (string) $source Directory with path.
+     * @param (string) $target Target directory
+     * @param (array)  $dir    Dir to be move
      *
      * @return void
      */
@@ -268,7 +267,7 @@ class Files
     /**
      * Delete dirs.
      *
-     * @param $dir Directory with path.
+     * @param (string) $dir Directory with path.
      *
      * @return void
      */
@@ -284,10 +283,10 @@ class Files
     /**
      * Upload file.
      *
-     * @param $file file to be uploaded.
-     *        $target target where file should be upload
-     *        $imgType supported => image,media,docs,zip
-     *        $maxSize file size to be allowed
+     * @param (string) $file    File to be uploaded.
+     * @param (string) $target  Target where file should be upload
+     * @param (string) $imgType Supported => image,media,docs,zip
+     * @param (int)    $maxSize File size to be allowed
      *
      * @return void
      */
@@ -415,8 +414,8 @@ class Files
     /**
      * Open the file.
      *
-     * @param $name => name of file
-     *        $mode => mode of file
+     * @param (string) $name Name of file
+     * @param (string) $mode Mode of file
      *
      * @return resource
      */
@@ -432,7 +431,7 @@ class Files
     /**
      * Read the file.
      *
-     * @param $file file that to be read
+     * @param (string) $file File that to be read
      *
      * @return file
      */
@@ -444,7 +443,7 @@ class Files
     /**
      * Write on file.
      *
-     * @param $data data that you want write on file
+     * @param (string) $data Data that you want write on file
      *
      * @return bool
      */
@@ -468,7 +467,7 @@ class Files
     /**
      * generate salts for files.
      *
-     * @param string $length length of salts
+     * @param (string) $length Length of salts
      *
      * @return string
      */
